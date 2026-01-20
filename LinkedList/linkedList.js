@@ -37,18 +37,18 @@ class List {
     this.head = newNode;
   };
 
-  search = (value) => {
+  search = (predicate) => {
     let currentNode = this.head;
     while (currentNode !== null) {
-      if (currentNode.data === value) return currentNode;
+      if (predicate(currentNode.data)) return currentNode;
       currentNode = currentNode.next;
     }
     return null;
   };
 
   insertAt = (position, value) => {
-    if (position < 0) return;
-    if (this.isEmpty() && position > 0) return;
+    if (position < 0) return false;
+    if (this.isEmpty() && position > 0) return false;
     if (position === 0) {
       this.prepend(value);
       return;
@@ -59,11 +59,12 @@ class List {
       currentNode = currentNode.next;
       ++i;
     }
-    if (i !== position - 1) return;
+    if (i !== position - 1) return false;
     const nextNode = currentNode.next;
     const newNode = new Node(value);
     currentNode.next = newNode;
     newNode.next = nextNode;
+    return true;
   };
 
   removeFirst = () => {
@@ -73,8 +74,8 @@ class List {
   };
 
   removeAt = (position) => {
-    if (position < 0) return;
-    if (this.isEmpty()) return;
+    if (position < 0) return false;
+    if (this.isEmpty()) return false;
     if (position === 0) {
       this.removeFirst();
       return;
@@ -85,8 +86,26 @@ class List {
       currentNode = currentNode.next;
       ++i;
     }
-    if (currentNode.next === null) return;
+    if (currentNode.next === null) return false;
     currentNode.next = currentNode.next.next;
+    return true;
+  };
+
+  removeBy = (predicate) => {
+    if (this.isEmpty()) return false;
+    if (predicate(this.head.data)) {
+      this.removeFirst();
+      return true;
+    }
+    let currentNode = this.head;
+    while (currentNode.next !== null) {
+      if (predicate(currentNode.next.data)) {
+        currentNode.next = currentNode.next.next;
+        return true;
+      }
+      currentNode = currentNode.next;
+    }
+    return false;
   };
 
   printList = () => {
@@ -106,16 +125,18 @@ const list = new List();
 list.append(15);
 list.append(17);
 list.append(25);
-list.printList();
+// list.printList();
 list.prepend(7);
 list.append(585);
 list.append(294);
-list.printList();
+// list.printList();
 
-list.printList();
+// list.printList();
 list.removeAt(2);
 list.removeFirst();
-list.printList();
-console.log(list.search(17));
+// list.printList();
+// console.log(list.search(17));
 list.insertAt(2, 1234);
-list.printList();
+// list.printList();
+
+export default List;
