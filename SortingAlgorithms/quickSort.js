@@ -1,36 +1,26 @@
-const QuickSort = (inputArray) => {
-  if (!Array.isArray(inputArray)) return [];
-  const arr = [...inputArray];
+const quickSort = (array, left = 0, right = array.length - 1) => {
+  if (left < right) {
+    const pivotIndex = partition(array, left, right);
+    quickSort(array, left, pivotIndex - 1);
+    quickSort(array, pivotIndex + 1, right);
+  }
+  return array;
+};
 
-  const partition = (low, high) => {
-    const pivotEl = arr[low];
-    let i = low;
-    let j = high;
-    do {
-      do {
-        ++i;
-      } while (arr[i] < pivotEl);
-      do {
-        --j;
-      } while (arr[j] > pivotEl);
+const partition = (array, left, right) => {
+  const mid = Math.floor((left + right) / 2);
+  [array[mid], array[right]] = [array[right], array[mid]];
 
-      if (j > i) {
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-    } while (i < j);
+  const pivot = array[right];
+  let i = left - 1;
 
-    [arr[low], arr[j]] = [arr[j], arr[low]];
-    return j;
-  };
-
-  const sort = (low, high) => {
-    if (low < high) {
-      const j = partition(low, high);
-      sort(low, j);
-      sort(j + 1, high);
+  for (let j = left; j < right; j++) {
+    if (array[j] < pivot) {
+      i++;
+      [array[i], array[j]] = [array[j], array[i]];
     }
-  };
+  }
 
-  sort(0, arr.length - 1);
-  return arr;
+  [array[i + 1], array[right]] = [array[right], array[i + 1]];
+  return i + 1;
 };
